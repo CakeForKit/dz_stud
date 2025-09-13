@@ -1,0 +1,22 @@
+name: dz_1
+
+on:
+  push:
+    branches: [ '*' ] # Любая ветка
+  pull_request:
+    branches: [ main ]
+
+# 4. Определение jobs (работ) - ЧТО делать
+jobs:
+  # Job 1: Тестирование
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - ...
+
+  # Job 2: Сборка и деплой
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    needs: test # Зависимость от job 'test'
+    steps:
+      - ...
