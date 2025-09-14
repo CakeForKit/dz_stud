@@ -25,7 +25,6 @@ func main() {
 	if err != nil {
 		println("Ошибка:", err.Error()) // negative numbers are not allowed
 	}
-	panic("qweqwe")
 
 	// Пример 4: пустой результат
 	result1, result2, err = task1.FilterCommonDigits(111, 111)
