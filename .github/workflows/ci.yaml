@@ -21,7 +21,7 @@ jobs:
 
     - name: Build and run main.go
       run: |
-        go build -o main-app main.go
+        go build -v ./...
         ./main-app
 
     - name: Test
