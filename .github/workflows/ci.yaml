@@ -27,4 +27,4 @@ jobs:
         rm ./main-app
 
     - name: Test
-      run: go test ./...
+      run: go test ./... -shuffle=on

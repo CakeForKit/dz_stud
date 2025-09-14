@@ -3,6 +3,7 @@ package tests
 import (
 	task1 "dz1/internal/task_1"
 	"errors"
+	"testing"
 
 	"github.com/ozontech/allure-go/pkg/framework/provider"
 	"github.com/ozontech/allure-go/pkg/framework/suite"
@@ -12,6 +13,10 @@ var (
 	ErrNegNums  = errors.New("negative numbers are not allowed")
 	ErrEmptyNum = errors.New("resulting number is empty")
 )
+
+func TestFilterCommonDigits(t *testing.T) {
+	suite.RunSuite(t, new(FilterCommonDigitsSuite))
+}
 
 type FilterCommonDigitsSuite struct {
 	suite.Suite
@@ -46,7 +51,7 @@ func (s *FilterCommonDigitsSuite) TestFilterCommonDigits(t provider.T) {
 		// Then
 		t.Require().NoError(err)
 		t.Require().Equal(1234, result1)
-		t.Require().Equal(789, result2)
+		t.Require().Equal(6789, result2)
 	})
 
 	t.Run("Все цифры общие - ошибка EmptyNum", func(t provider.T) {
