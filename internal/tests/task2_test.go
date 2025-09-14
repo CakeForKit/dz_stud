@@ -13,7 +13,7 @@ import (
 )
 
 func TestFindCommonWords(t *testing.T) {
-
+	defer removeResultFile(t)
 	// Создаем временную директорию для тестовых файлов
 	testDir := t.TempDir()
 
@@ -140,7 +140,7 @@ func TestFindCommonWords(t *testing.T) {
 }
 
 func TestFindCommonWords_Errors(t *testing.T) {
-
+	defer removeResultFile(t)
 	testDir := t.TempDir()
 
 	t.Run("Несуществующий файл", func(t *testing.T) {
@@ -217,7 +217,7 @@ func TestFindCommonWords_Errors(t *testing.T) {
 }
 
 func TestFindCommonWords_EdgeCases(t *testing.T) {
-
+	defer removeResultFile(t)
 	testDir := t.TempDir()
 
 	t.Run("Файл только с пробелами", func(t *testing.T) {
@@ -327,5 +327,12 @@ func emptyResultFile(t *testing.T) {
 	t.Helper()
 
 	err := os.WriteFile("res.txt", []byte{}, 0644)
+	require.NoError(t, err)
+}
+
+func removeResultFile(t *testing.T) {
+	t.Helper()
+
+	err := os.Remove("res.txt")
 	require.NoError(t, err)
 }
