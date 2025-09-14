@@ -1,31 +1,17 @@
-package tests
+package task1_test
 
 import (
 	task1 "dz1/internal/task_1"
-	"errors"
 	"testing"
 
-	"github.com/ozontech/allure-go/pkg/framework/provider"
-	"github.com/ozontech/allure-go/pkg/framework/suite"
-)
-
-var (
-	ErrNegNums  = errors.New("negative numbers are not allowed")
-	ErrEmptyNum = errors.New("resulting number is empty")
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestFilterCommonDigits(t *testing.T) {
-	suite.RunSuite(t, new(FilterCommonDigitsSuite))
-}
-
-type FilterCommonDigitsSuite struct {
-	suite.Suite
-}
-
-func (s *FilterCommonDigitsSuite) TestFilterCommonDigits(t provider.T) {
 	t.Parallel()
 
-	t.Run("Обычный случай: нет общих цифр", func(t provider.T) {
+	t.Run("Обычный случай: нет общих цифр", func(t *testing.T) {
 		t.Parallel()
 		// Given
 		a, b := 123, 456
@@ -34,13 +20,12 @@ func (s *FilterCommonDigitsSuite) TestFilterCommonDigits(t provider.T) {
 		result1, result2, err := task1.FilterCommonDigits(a, b)
 
 		// Then
-		// t.Require().NoError(err)
-		t.Require().Error(err)
-		t.Require().Equal(123, result1)
-		t.Require().Equal(456, result2)
+		require.NoError(t, err)
+		assert.Equal(t, 123, result1)
+		assert.Equal(t, 456, result2)
 	})
 
-	t.Run("Есть общие цифры", func(t provider.T) {
+	t.Run("Есть общие цифры", func(t *testing.T) {
 		t.Parallel()
 		// Given
 		a, b := 12345, 56789
@@ -49,12 +34,12 @@ func (s *FilterCommonDigitsSuite) TestFilterCommonDigits(t provider.T) {
 		result1, result2, err := task1.FilterCommonDigits(a, b)
 
 		// Then
-		t.Require().NoError(err)
-		t.Require().Equal(1234, result1)
-		t.Require().Equal(6789, result2)
+		require.NoError(t, err)
+		assert.Equal(t, 1234, result1)
+		assert.Equal(t, 6789, result2)
 	})
 
-	t.Run("Все цифры общие - ошибка EmptyNum", func(t provider.T) {
+	t.Run("Все цифры общие - ошибка EmptyNum", func(t *testing.T) {
 		t.Parallel()
 		// Given
 		a, b := 111, 111
@@ -63,13 +48,13 @@ func (s *FilterCommonDigitsSuite) TestFilterCommonDigits(t provider.T) {
 		result1, result2, err := task1.FilterCommonDigits(a, b)
 
 		// Then
-		t.Require().Error(err)
-		t.Require().Equal(ErrEmptyNum, err)
-		t.Require().Equal(0, result1)
-		t.Require().Equal(0, result2)
+		require.Error(t, err)
+		assert.Equal(t, task1.ErrEmptyNum, err)
+		assert.Equal(t, 0, result1)
+		assert.Equal(t, 0, result2)
 	})
 
-	t.Run("Отрицательные числа - ошибка NegNums", func(t provider.T) {
+	t.Run("Отрицательные числа - ошибка NegNums", func(t *testing.T) {
 		t.Parallel()
 		// Given
 		a, b := -123, 456
@@ -78,13 +63,13 @@ func (s *FilterCommonDigitsSuite) TestFilterCommonDigits(t provider.T) {
 		result1, result2, err := task1.FilterCommonDigits(a, b)
 
 		// Then
-		t.Require().Error(err)
-		t.Require().Equal(ErrNegNums, err)
-		t.Require().Equal(0, result1)
-		t.Require().Equal(0, result2)
+		require.Error(t, err)
+		assert.Equal(t, task1.ErrNegNums, err)
+		assert.Equal(t, 0, result1)
+		assert.Equal(t, 0, result2)
 	})
 
-	t.Run("Нулевые значения", func(t provider.T) {
+	t.Run("Нулевые значения", func(t *testing.T) {
 		t.Parallel()
 		// Given
 		a, b := 0, 123
@@ -93,12 +78,12 @@ func (s *FilterCommonDigitsSuite) TestFilterCommonDigits(t provider.T) {
 		result1, result2, err := task1.FilterCommonDigits(a, b)
 
 		// Then
-		t.Require().NoError(err)
-		t.Require().Equal(0, result1)
-		t.Require().Equal(123, result2)
+		require.NoError(t, err)
+		assert.Equal(t, 0, result1)
+		assert.Equal(t, 123, result2)
 	})
 
-	t.Run("Большие числа с общими цифрами - ошибка EmptyNum", func(t provider.T) {
+	t.Run("Большие числа с общими цифрами - ошибка EmptyNum", func(t *testing.T) {
 		t.Parallel()
 		// Given
 		a, b := 987654321, 123456789
@@ -107,13 +92,13 @@ func (s *FilterCommonDigitsSuite) TestFilterCommonDigits(t provider.T) {
 		result1, result2, err := task1.FilterCommonDigits(a, b)
 
 		// Then
-		t.Require().Error(err)
-		t.Require().Equal(ErrEmptyNum, err)
-		t.Require().Equal(0, result1)
-		t.Require().Equal(0, result2)
+		require.Error(t, err)
+		assert.Equal(t, task1.ErrEmptyNum, err)
+		assert.Equal(t, 0, result1)
+		assert.Equal(t, 0, result2)
 	})
 
-	t.Run("Оба числа отрицательные", func(t provider.T) {
+	t.Run("Оба числа отрицательные", func(t *testing.T) {
 		t.Parallel()
 		// Given
 		a, b := -123, -456
@@ -122,13 +107,13 @@ func (s *FilterCommonDigitsSuite) TestFilterCommonDigits(t provider.T) {
 		result1, result2, err := task1.FilterCommonDigits(a, b)
 
 		// Then
-		t.Require().Error(err)
-		t.Require().Equal(ErrNegNums, err)
-		t.Require().Equal(0, result1)
-		t.Require().Equal(0, result2)
+		require.Error(t, err)
+		assert.Equal(t, task1.ErrNegNums, err)
+		assert.Equal(t, 0, result1)
+		assert.Equal(t, 0, result2)
 	})
 
-	t.Run("Частично общие цифры", func(t provider.T) {
+	t.Run("Частично общие цифры", func(t *testing.T) {
 		t.Parallel()
 		// Given
 		a, b := 123456, 456789
@@ -137,8 +122,8 @@ func (s *FilterCommonDigitsSuite) TestFilterCommonDigits(t provider.T) {
 		result1, result2, err := task1.FilterCommonDigits(a, b)
 
 		// Then
-		t.Require().NoError(err)
-		t.Require().Equal(123, result1)
-		t.Require().Equal(789, result2)
+		require.NoError(t, err)
+		assert.Equal(t, 123, result1)
+		assert.Equal(t, 789, result2)
 	})
 }
