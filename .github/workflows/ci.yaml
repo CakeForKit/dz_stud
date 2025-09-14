@@ -12,11 +12,18 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - ...
+    # 1. КЛОНИРОВАНИЕ КОДА (обязательный шаг) -- "Скопируй код из ЭТОГО репозитория (и именно ту версию, которая запустила workflow) на виртуальную машину, чтобы следующие шаги могли с ним работать."
+    - name: Checkout repository
+      uses: actions/checkout@v4
 
-  # Job 2: Сборка и деплой
-  build-and-deploy:
-    runs-on: ubuntu-latest
-    needs: test # Зависимость от job 'test'
-    steps:
-      - ...
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.25'
+        cache-dependency-path: go.sum
+
+    - name: Build
+      run: go build -v ./...
+
+    - name: Test
+      run: go test ./...
