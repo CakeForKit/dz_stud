@@ -1,4 +1,4 @@
-package task1_test
+package tests
 
 import (
 	task1 "dz1/internal/task_1"
