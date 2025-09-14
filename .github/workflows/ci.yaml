@@ -6,13 +6,10 @@ on:
   pull_request:
     branches: [ main ]
 
-# 4. Определение jobs (работ) - ЧТО делать
 jobs:
-  # Job 1: Тестирование
   test:
     runs-on: ubuntu-latest
     steps:
-    # 1. КЛОНИРОВАНИЕ КОДА (обязательный шаг) -- "Скопируй код из ЭТОГО репозитория (и именно ту версию, которая запустила workflow) на виртуальную машину, чтобы следующие шаги могли с ним работать."
     - name: Checkout repository
       uses: actions/checkout@v4
 
@@ -22,8 +19,10 @@ jobs:
         go-version: '1.25'
         cache-dependency-path: go.sum
 
-    - name: Build
-      run: go build -v ./...
+    - name: Build and run main.go
+      run: |
+        go build -o main-app main.go
+        ./main-app
 
     - name: Test
       run: go test ./...
