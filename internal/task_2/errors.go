@@ -1,7 +1,7 @@
 package task2
 
-import "errors"
+import "fmt"
 
 var (
-	ErrOpenFile = errors.New("cannot open file")
+	ErrOpenFile = fmt.Errorf("failed to open file")
 )

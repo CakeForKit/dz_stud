@@ -3,104 +3,55 @@ package task2
 import (
 	"bufio"
 	"os"
-	"sort"
+	"strings"
 )
 
-func FindCommonWords(filenames ...string) error {
-	if len(filenames) == 0 {
+func FindCommonWords(outputFilename string, inputFilenames ...string) error {
+	if len(inputFilenames) == 0 {
 		return nil
 	}
 
-	// Читаем слова из первого файла
-	firstFileWords, err := readWordsFromFile(filenames[0])
-	if err != nil {
-		return ErrOpenFile
-	}
+	// Создаем слайс для хранения множеств слов из каждого файла
+	wordSets := make([]map[string]bool, len(inputFilenames))
 
-	// Создаем слайс для общих слов
-	commonWords := firstFileWords
-
-	// Пересекаем с остальными файлами
-	for i := 1; i < len(filenames); i++ {
-		fileWords, err := readWordsFromFile(filenames[i])
+	// Читаем слова из каждого файла
+	for i, filename := range inputFilenames {
+		file, err := os.Open(filename)
 		if err != nil {
 			return ErrOpenFile
 		}
+		defer file.Close()
 
-		commonWords = intersect(commonWords, fileWords)
-		if len(commonWords) == 0 {
-			break // нет общих слов
+		scanner := bufio.NewScanner(file)
+		scanner.Split(bufio.ScanWords)
+
+		wordSet := make(map[string]bool)
+		for scanner.Scan() {
+			word := strings.TrimSpace(scanner.Text())
+			if word != "" {
+				wordSet[word] = true
+			}
 		}
-	}
 
-	// Сортируем для удобства (опционально)
-	sort.Strings(commonWords)
-
-	// Записываем результат
-	return writeToFile(commonWords)
-}
-
-// readWordsFromFile читает уникальные слова из файла
-func readWordsFromFile(filename string) ([]string, error) {
-	file, err := os.Open(filename)
-	if err != nil {
-		return nil, ErrOpenFile
-	}
-	defer file.Close()
-
-	wordSet := make(map[string]bool)
-	scanner := bufio.NewScanner(file)
-	scanner.Split(bufio.ScanWords)
-
-	for scanner.Scan() {
-		word := scanner.Text()
-		if word != "" {
-			wordSet[word] = true
+		if err := scanner.Err(); err != nil {
+			return ErrOpenFile
 		}
+
+		wordSets[i] = wordSet
 	}
 
-	if err := scanner.Err(); err != nil {
-		return nil, ErrOpenFile
-	}
+	// Находим пересечение всех множеств
+	commonWords := findIntersection(wordSets)
 
-	// Преобразуем мапу в слайс
-	result := make([]string, 0, len(wordSet))
-	for word := range wordSet {
-		result = append(result, word)
-	}
-
-	return result, nil
-}
-
-// intersect находит пересечение двух слайсов слов
-func intersect(a, b []string) []string {
-	// Создаем мапу для второго слайса
-	bSet := make(map[string]bool)
-	for _, word := range b {
-		bSet[word] = true
-	}
-
-	// Ищем пересечение
-	result := make([]string, 0)
-	for _, word := range a {
-		if bSet[word] {
-			result = append(result, word)
-		}
-	}
-
-	return result
-}
-
-// writeToFile записывает слова в файл
-func writeToFile(words []string) error {
-	file, err := os.Create("res.txt")
+	// Записываем результат в выходной файл
+	outputFile, err := os.Create(outputFilename)
 	if err != nil {
 		return ErrOpenFile
 	}
-	defer file.Close()
+	defer outputFile.Close()
 
-	writer := bufio.NewWriter(file)
-	for _, word := range words {
+	writer := bufio.NewWriter(outputFile)
+	for word := range commonWords {
 		_, err := writer.WriteString(word + "\n")
 		if err != nil {
 			return err
@@ -108,4 +59,30 @@ func writeToFile(words []string) error {
 	}
 
 	return writer.Flush()
+}
+
+// Вспомогательная функция для нахождения пересечения множеств
+func findIntersection(wordSets []map[string]bool) map[string]bool {
+	if len(wordSets) == 0 {
+		return make(map[string]bool)
+	}
+
+	// Начинаем с первого множества
+	result := make(map[string]bool)
+	for word := range wordSets[0] {
+		result[word] = true
+	}
+
+	// Постепенно находим пересечение с остальными множествами
+	for i := 1; i < len(wordSets); i++ {
+		temp := make(map[string]bool)
+		for word := range result {
+			if wordSets[i][word] {
+				temp[word] = true
+			}
+		}
+		result = temp
+	}
+
+	return result
 }

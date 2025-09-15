@@ -6,6 +6,7 @@ import (
 	task3 "dz1/internal/task_3"
 	"fmt"
 	"os"
+	"path/filepath"
 )
 
 func example_1() {
@@ -28,93 +29,109 @@ func example_1() {
 	// Пример 3: отрицательные числа
 	_, _, err = task1.FilterCommonDigits(-123, 456)
 	if err != nil {
-		println("Ошибка:", err.Error()) // negative numbers are not allowed
+		println("Ошибка (ожидаемая):", err.Error()) // negative numbers are not allowed
 	}
 
 	// Пример 4: пустой результат
 	_, _, err = task1.FilterCommonDigits(111, 111)
 	if err != nil {
-		println("Ошибка:", err.Error()) // resulting number is empty
+		println("Ошибка (ожидаемая):", err.Error()) // resulting number is empty
 	}
+}
+
+func createTestFiles() error {
+	// Создаем директорию если её нет
+	dir := "./task_2/files/"
+	err := os.MkdirAll(dir, 0755)
+	if err != nil {
+		return err
+	}
+
+	// Создаем тестовые файлы
+	files := map[string]string{
+		"file1.txt":  "hello world go programming test",
+		"file2.txt":  "world test code go example",
+		"file3.txt":  "apple banana cherry",
+		"file4.txt":  "apple banana cherry",
+		"file5.txt":  "python java c++",
+		"file6.txt":  "javascript php ruby",
+		"file7.txt":  "single file example words",
+		"empty1.txt": "",
+		"empty2.txt": "   \n\n\t  ",
+	}
+
+	for filename, content := range files {
+		file, err := os.Create(filepath.Join(dir, filename))
+		if err != nil {
+			return err
+		}
+		_, err = file.WriteString(content)
+		file.Close()
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
 
 func example_2() {
 	// Задание 2
-	f1 := "./task_2/files/file1.txt"
-	f2 := "./task_2/files/file2.txt"
-	f3 := "./task_2/files/file3.txt"
-	// Пример 1: нормальная работа с общими словами
-	fmt.Println("Пример 1: нормальная работа")
-	err := task2.FindCommonWords(f1, f2, f3)
+	err := createTestFiles()
 	if err != nil {
-		fmt.Printf("Ошибка: %v\n", err)
-	} else {
-		fmt.Println("Результат записан в res.txt")
-		// Читаем и выводим результат
-		content, _ := os.ReadFile("res.txt")
-		fmt.Printf("Общие слова: %s\n", string(content))
+		println("Ошибка создания файлов:", err.Error())
+		return
 	}
-	fmt.Println()
 
-	// Пример 2: несуществующий файл
-	fmt.Println("Пример 2: несуществующий файл")
-	err = task2.FindCommonWords(f1, "nonexistent.txt")
+	// Пример 1: нормальная работа с общими словами
+	err = task2.FindCommonWords("./task_2/files/result1.txt",
+		"./task_2/files/file1.txt", "./task_2/files/file2.txt")
 	if err != nil {
-		fmt.Printf("Ошибка: %v\n", err) // ErrOpenFile
+		println("Ошибка:", err.Error())
 	} else {
-		fmt.Println("Успешно обработано")
+		println("Успешно записаны общие слова в result1.txt")
 	}
-	fmt.Println()
+
+	// Пример 2: все слова общие
+	err = task2.FindCommonWords("./task_2/files/result2.txt",
+		"./task_2/files/file3.txt", "./task_2/files/file4.txt")
+	if err != nil {
+		println("Ошибка:", err.Error())
+	} else {
+		println("Успешно записаны все слова в result2.txt")
+	}
 
 	// Пример 3: нет общих слов
-	fmt.Println("Пример 3: нет общих слов")
-	err = task2.FindCommonWords(f1, "file4.txt")
+	err = task2.FindCommonWords("./task_2/files/result3.txt",
+		"./task_2/files/file5.txt", "./task_2/files/file6.txt")
 	if err != nil {
-		fmt.Printf("Ошибка: %v\n", err)
+		println("Ошибка:", err.Error())
 	} else {
-		fmt.Println("Результат записан в res.txt")
-		content, _ := os.ReadFile("res.txt")
-		if len(content) == 0 {
-			fmt.Println("Нет общих слов")
-		} else {
-			fmt.Printf("Общие слова: %s\n", string(content))
-		}
+		println("Успешно создан пустой файл result3.txt")
 	}
-	fmt.Println()
 
-	// Пример 4: пустые файлы
-	fmt.Println("Пример 4: пустые файлы")
-	err = task2.FindCommonWords("empty1.txt", "empty2.txt")
+	// Пример 4: несуществующий файл
+	err = task2.FindCommonWords("./task_2/files/result4.txt",
+		"./task_2/files/nonexistent.txt", "./task_2/files/file1.txt")
 	if err != nil {
-		fmt.Printf("Ошибка: %v\n", err)
-	} else {
-		fmt.Println("Результат записан в res.txt")
-		content, _ := os.ReadFile("res.txt")
-		if len(content) == 0 {
-			fmt.Println("Нет общих слов")
-		}
+		println("Ошибка (ожидаемая):", err.Error()) // failed to open file
 	}
-	fmt.Println()
 
 	// Пример 5: только один файл
-	fmt.Println("Пример 5: только один файл")
-	err = task2.FindCommonWords(f1)
+	err = task2.FindCommonWords("./task_2/files/result5.txt",
+		"./task_2/files/file1.txt")
 	if err != nil {
-		fmt.Printf("Ошибка: %v\n", err)
+		println("Ошибка:", err.Error())
 	} else {
-		fmt.Println("Результат записан в res.txt")
-		content, _ := os.ReadFile("res.txt")
-		fmt.Printf("Слова из файла: %s\n", string(content))
+		println("Успешно записаны слова из одного файла в result5.txt")
 	}
-	fmt.Println()
 
-	// Пример 6: нет файлов
-	fmt.Println("Пример 6: нет файлов")
-	err = task2.FindCommonWords()
+	// Пример 6: без входных файлов
+	err = task2.FindCommonWords("./task_2/files/result6.txt")
 	if err != nil {
-		fmt.Printf("Ошибка: %v\n", err)
+		println("Ошибка:", err.Error())
 	} else {
-		fmt.Println("Нет файлов для обработки")
+		println("Успешно создан пустой файл (нет входных файлов)")
 	}
 }
 
@@ -132,7 +149,7 @@ func example_3() {
 	slice2 := make([]int, 1000000)        // 1,000,000 элементов
 	err = task3.ScaleSlice(&slice2, 5000) // 1,000,000 * 5,000 = 5,000,000,000 > 4,294,967,295
 	if err != nil {
-		fmt.Printf("Ошибка: %v\n", err) // ErrOverflow
+		fmt.Printf("Ошибка (ожидаемая): %v\n", err) // ErrOverflow
 	} else {
 		fmt.Printf("Результат: %v\n", slice2)
 	}

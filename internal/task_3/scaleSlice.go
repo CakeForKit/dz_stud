@@ -1,13 +1,5 @@
 package task3
 
-import (
-	"errors"
-)
-
-var (
-	ErrOverflow = errors.New("resulting slice size exceeds uint32 maximum")
-)
-
 // ScaleSlice увеличивает размер среза в scaleFactor раз, заполняя новые элементы копиями исходных данных
 // Возвращает ErrOverflow если размер результирующего среза превышает максимальное значение uint32
 func ScaleSlice(slice *[]int, scaleFactor uint32) error {
