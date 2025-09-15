@@ -84,8 +84,8 @@ func example_2() {
 	}
 
 	// Пример 1: нормальная работа с общими словами
-	err = task2.FindCommonWords("./task_2/files/result1.txt",
-		"./task_2/files/file1.txt", "./task_2/files/file2.txt")
+	err = task2.FindCommonWords("./internal/task_2/files/result1.txt",
+		"./internal/task_2/files/file1.txt", "./internal/task_2/files/file2.txt")
 	if err != nil {
 		println("Ошибка:", err.Error())
 	} else {
@@ -93,8 +93,8 @@ func example_2() {
 	}
 
 	// Пример 2: все слова общие
-	err = task2.FindCommonWords("./task_2/files/result2.txt",
-		"./task_2/files/file3.txt", "./task_2/files/file4.txt")
+	err = task2.FindCommonWords("./internal/task_2/files/result2.txt",
+		"./internal/task_2/files/file3.txt", "./internal/task_2/files/file4.txt")
 	if err != nil {
 		println("Ошибка:", err.Error())
 	} else {
@@ -102,8 +102,8 @@ func example_2() {
 	}
 
 	// Пример 3: нет общих слов
-	err = task2.FindCommonWords("./task_2/files/result3.txt",
-		"./task_2/files/file5.txt", "./task_2/files/file6.txt")
+	err = task2.FindCommonWords("./internal/task_2/files/result3.txt",
+		"./internal/task_2/files/file5.txt", "./internal/task_2/files/file6.txt")
 	if err != nil {
 		println("Ошибка:", err.Error())
 	} else {
@@ -111,15 +111,15 @@ func example_2() {
 	}
 
 	// Пример 4: несуществующий файл
-	err = task2.FindCommonWords("./task_2/files/result4.txt",
-		"./task_2/files/nonexistent.txt", "./task_2/files/file1.txt")
+	err = task2.FindCommonWords("./internal/task_2/files/result4.txt",
+		"./internal/task_2/files/nonexistent.txt", "./internal/task_2/files/file1.txt")
 	if err != nil {
 		println("Ошибка (ожидаемая):", err.Error()) // failed to open file
 	}
 
 	// Пример 5: только один файл
-	err = task2.FindCommonWords("./task_2/files/result5.txt",
-		"./task_2/files/file1.txt")
+	err = task2.FindCommonWords("./internal/task_2/files/result5.txt",
+		"./internal/task_2/files/file1.txt")
 	if err != nil {
 		println("Ошибка:", err.Error())
 	} else {
@@ -127,7 +127,7 @@ func example_2() {
 	}
 
 	// Пример 6: без входных файлов
-	err = task2.FindCommonWords("./task_2/files/result6.txt")
+	err = task2.FindCommonWords("./internal/task_2/files/result6.txt")
 	if err != nil {
 		println("Ошибка:", err.Error())
 	} else {
