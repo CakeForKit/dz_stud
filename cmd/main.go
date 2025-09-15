@@ -41,7 +41,7 @@ func example_1() {
 
 func createTestFiles() error {
 	// Создаем директорию если её нет
-	dir := "./task_2/files/"
+	dir := "./internal/task_2/files/"
 	err := os.MkdirAll(dir, 0755)
 	if err != nil {
 		return err
